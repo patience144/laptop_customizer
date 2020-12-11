@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
-
-// Normalizes string as a slug - a string that is safe to use
-// in both URLs and html attributes
-import slugify from 'slugify';
-
-import './App.css';
-
-import FeatureItem from './Features/FeatureItem';
-import Feature from './Features/Feature';
-import SummaryOption from './Features/SummaryOption';
 import Header from './Header'
-import MainForm from './Features/MainForm';
-import MainSummary from './Features/MainSummary';
+import MainForm from './MainForm/MainForm';
+import MainSummary from './MainSummary/MainSummary';
+import FEATURES from './data';
+import './App.css';
 
 // This object will allow us to
 // easily convert numbers into US dollar values
@@ -48,44 +40,6 @@ class App extends Component {
   };
 
   render() {
-    const features = Object.keys(this.props.features).map((feature, idx) => {
-      const featureHash = feature + '-' + idx;
-      const options = this.props.features[feature].map(item => {
-        const itemHash = slugify(JSON.stringify(item));
-        return (
-          <FeatureItem 
-            itemHash={itemHash}
-            slugify={slugify}
-            feature={feature}
-            item={item}
-            updateFeature={this.updateFeature}
-            state={this.state}
-          />
-        );
-      });
-
-      return (
-       <Feature 
-        featureHash={featureHash}
-        feature={feature}
-        options={options}
-       />
-      );
-    });
-
-    const summary = Object.keys(this.state.selected).map((feature, idx) => {
-      const featureHash = feature + '-' + idx;
-      const selectedOption = this.state.selected[feature];
-
-      return (
-        <SummaryOption 
-          featureHash={featureHash}
-          feature={feature}
-          selectedOption={selectedOption}
-        />
-      );
-    });
-
     const total = Object.keys(this.state.selected).reduce(
       (acc, curr) => acc + this.state.selected[curr].cost,
       0
@@ -96,10 +50,12 @@ class App extends Component {
         <Header />
         <main>
           <MainForm 
-            features={features}
+            features={FEATURES}
+            selected={this.state.selected}
+            updateFeature={this.updateFeature}
           />
-          <MainSummary 
-            summary={summary}
+          <MainSummary
+            state={this.state} 
             total={total}
           />
         </main>
